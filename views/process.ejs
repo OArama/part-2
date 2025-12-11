@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Ticker Search - Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .results-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .search-info {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .search-info strong {
+            color: #0891b2;
+        }
+        
+        .error {
+            background: #fee;
+            border-left: 4px solid #f44;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: #c33;
+        }
+        
+        .no-results {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 5px;
+            color: #856404;
+            text-align: center;
+        }
+        
+        .results-count {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+        
+        .result-item {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-color: #06b6d4;
+        }
+        
+        .company-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .result-details {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .detail {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .ticker-badge {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        
+        .price-value {
+            color: #4caf50;
+            font-size: 18px;
+        }
+        
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(6, 182, 212, 0.4);
+        }
+        
+        .divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="results-card">
+            <h1>📊 Search Results</h1>
+            
+            <% if (error) { %>
+                <div class="error">
+                    <strong>Error:</strong> <%= error %>
+                </div>
+                <a href="/" class="back-button">← Back to Search</a>
+            <% } else if (results) { %>
+                <p class="search-info">
+                    Searched by <strong><%= searchType === 'ticker' ? 'Ticker Symbol' : 'Company Name' %></strong>: 
+                    <strong>"<%= searchTerm %>"</strong>
+                </p>
+                
+                <% if (results.length === 0) { %>
+                    <div class="no-results">
+                        <h2>No Results Found</h2>
+                        <p>No companies match your search term "<%= searchTerm %>".</p>
+                        <p style="margin-top: 10px;">Try searching with a different term or search type.</p>
+                    </div>
+                <% } else { %>
+                    <div class="results-count">
+                        Found <%= results.length %> <%= results.length === 1 ? 'company' : 'companies' %>
+                    </div>
+                    
+                    <% results.forEach((result, index) => { %>
+                        <div class="result-item">
+                            <div class="company-name">
+                                <%= index + 1 %>. <%= result.company %>
+                            </div>
+                            <div class="result-details">
+                                <div class="detail">
+                                    <span class="detail-label">Ticker Symbol</span>
+                                    <span class="ticker-badge"><%= result.ticker %></span>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Stock Price</span>
+                                    <span class="price-value">$<%= result.price.toFixed(2) %></span>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } %>
+                
+                <div class="divider"></div>
+                <a href="/" class="back-button">← New Search</a>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>
